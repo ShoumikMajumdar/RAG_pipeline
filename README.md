@@ -1,4 +1,4 @@
-# RAG pipeline using LanChain
+# RAG pipeline using LangChain
 
 A simple retrieval-augmented generation framework using LangChain.
 

@@ -54,7 +54,7 @@ def initialize():
     llm = HuggingFaceHub(
         repo_id="declare-lab/flan-alpaca-large",
         # repo_id="google/flan-t5-base",
-        model_kwargs={"temperature": 0.5, "max_length": 256},
+        model_kwargs={"temperature": 0.1, "max_length": 256},
         huggingfacehub_api_token="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",  # Remove this
     )
 

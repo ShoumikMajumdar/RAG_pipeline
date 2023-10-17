@@ -4,13 +4,13 @@ A simple retrieval-augmented generation framework using LangChain.
 
 To run:
 
-1) Install requirements using <br>
+1. Install requirements using <br>
 `pip install -r requirements.txt`
 
-2) Create your knoweldge base by adding pdfs to the data folder.
+2. Create your knoweldge base by adding pdfs to the data folder. <br>
 
-3)Run the code using <br>
-  `python RAG.py`
+3. Run the code using <br>
+`python RAG.py`
 
 
 

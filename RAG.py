@@ -24,6 +24,10 @@ from langchain.memory.chat_message_histories import ChatMessageHistory
 from langchain.prompts import PromptTemplate
 from langchain.indexes import VectorstoreIndexCreator
 
+HUGGINGFACEHUB_API_KEY = os.environ["HUGGINGFACEHUB_API_TOKEN"]
+if HUGGINGFACEHUB_API_KEY:
+    print(True)
+
 
 def initialize():
     # text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=300)
@@ -36,7 +40,7 @@ def initialize():
 
     model_name = "sentence-transformers/all-mpnet-base-v2"
     model_kwargs = {"device": "cpu"}
-    encode_kwargs = {"normalize_embeddings": False}
+    encode_kwargs = {"normalize_embeddings": True}
     embeddings = HuggingFaceEmbeddings(
         model_name=model_name, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs
     )
@@ -48,17 +52,17 @@ def initialize():
     vectordb.persist()
 
     # Initialize retriever. Using cosine similarity and retrieving 3 best matches.
-    retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+    retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
 
     # Initiate llm generator. Temperature = 0 (Not creative). Temperature = 1 (Creative). Using
     llm = HuggingFaceHub(
         repo_id="declare-lab/flan-alpaca-large",
-        # repo_id="google/flan-t5-base",
-        model_kwargs={"temperature": 0.1, "max_length": 256},
-        huggingfacehub_api_token="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",  # Remove this
+        # repo_id="google/flan-t5-large",
+        model_kwargs={"temperature": 0.2, "max_length": 512},
+        huggingfacehub_api_token=HUGGINGFACEHUB_API_KEY,
     )
 
-    # FUsing Palm2 on vertex.
+    # Using Palm2 on vertex.
     # llm = VertexAI(
     #     model_name="text-bison",
     #     temperature=0.1,
@@ -73,9 +77,9 @@ def initialize():
 def search_mode(retriever, llm):
     print("In Search mode")
     rqa_prompt_template = """Use the following pieces of context to answer the question at the end. 
-    Answer only from the context. If you do not know the answer, say you do not know. Elaborate the answers whenever possible. 
+    Answer only from the context. If you do not know the answer, say you do not know. 
     {context}
-
+    Explain in detail. 
     Question: {question}
     """
     RQA_PROMPT = PromptTemplate(
@@ -95,6 +99,8 @@ def search_mode(retriever, llm):
     result = qa({"query": query})
 
     print(result["result"])
+    print()
+    # print(result)
 
 
 def chat_mode(retriever, llm):
@@ -154,7 +160,7 @@ while choice != " ":
     choice = input("\nWhat would you like to do? ")
 
     # initialize knowledge base, retriever, and generator
-    if first:
+    if first and choice != "q":
         print(f"Setting up knowledge base, retriever, and generator ")
         embeddings, vectordb, retriever, llm = initialize()
         first = False

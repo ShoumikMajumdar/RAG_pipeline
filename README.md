@@ -19,9 +19,8 @@ To run:
 
 
 
-Some example questions you can try:
+Some example questions you can try: <br>
 
-Search Mode <br>
 1) What tools can I user for orchestration?
 2) What is the LLaMA 2 Community License Agreement?
 3) What vector databses can I use? 
